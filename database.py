@@ -65,19 +65,19 @@ def get_pr_id_name():
     actual_products= [[product[0], product[1]] for product in all_products if product[2]>0]
     return actual_products
 def delete_all_products():
-    connection = sqlite3.connect("pr_quantity")
+    connection = sqlite3.connect("KFC_DONEER.db")
     sql = connection.cursor()
     sql.execute("DELETE FROM products;")
     connection.commit()
 
 def change_quantity(pr_id,pr_quantity):
-    connection = sqlite3.connect("pr_quantity")
+    connection = sqlite3.connect("KFC_DONEER.db")
     sql = connection.cursor()
     sql.execute("UPDATE products SET pr_quantity=? WHERE pr_id=?", (pr_quantity, pr_id))
     connection.commit()
 
 def add_to_cart(user_id, pr_id, pr_name, pr_count, pr_price):
-    connection = sqlite3.connect("pr_quantity")
+    connection = sqlite3.connect("KFC_DONEER.db")
     sql = connection.cursor()
     total_price = pr_price * count
     sql.execute("INSERT INTO cart (user_id, pr_id, pr_name,"
@@ -85,16 +85,31 @@ def add_to_cart(user_id, pr_id, pr_name, pr_count, pr_price):
                 (user_id, pr_id, pr_name, pr_count, total_price))
     connection.commit()
 
-    def get_cart_id_name(user_id):
-        connection = sqlite3.connect("pr_quantity")
-        sql = connection.cursor()
-        product = sql.execute("SELECT pr_id, pr_name FROM cart WHERE user_id=?;",
-                              (user_id, )).fetchall()
-        return product
+def get_cart_id_name(user_id):
+    connection = sqlite3.connect("KFC_DONEER.db")
+    sql = connection.cursor()
+    product = sql.execute("SELECT pr_id, pr_name FROM cart WHERE user_id=?;",
+                            (user_id, )).fetchall()
+    return product
 
 def delete_exact_product_from_cart(user_id, pr_id):
-    connection = sqlite3.connect("pr_quantity")
+    connection = sqlite3.connect("KFC_DONEER.db")
     sql = connection.cursor()
     sql.execute("DELETE FROM cart WHERE user_id=? and pr_id=?;",
                 (user_id, pr_id))
     connection.commit()
+
+def delete_user_cart(user_id, pr_id): # укажите параметры
+    connection = sqlite3.connect("KFC_DONEER.db")
+    sql = connection.cursor()
+    sql.execute("DELETE FROM cart WHERE user_id=? and pr_id=?;",
+                (user_id, pr_id))
+    connection.commit()
+
+
+def get_user_cart(user_id, pr_id):
+    connection = sqlite3.connect("KFC_DONEER.db")
+    sql = connection.cursor()
+    product = sql.execute("SELECT pr_id, pr_name FROM cart WHERE user_id=?;",
+                          (user_id,)).fetchall()
+    return product
